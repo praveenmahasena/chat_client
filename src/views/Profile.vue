@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import { onBeforeMount } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 import axios from 'axios'
-
-
+var verified = ref(false)
 
 onBeforeMount(async () => {
   try {
@@ -13,7 +12,8 @@ onBeforeMount(async () => {
         'X-Token': localStorage.getItem('X-Token')
       }
     })
-    console.log(data)
+    verified.value = data
+    console.log(verified.value)
   } catch (error) {
     console.log(error)
   }
@@ -21,6 +21,7 @@ onBeforeMount(async () => {
 
 async function getMail() {
   try {
+  console.log('done')
     const { data } = await axios.get('http://localhost:42069/verify', {
       headers: {
         'Content-Type': 'application/json',
@@ -38,10 +39,9 @@ async function getMail() {
 <template>
   <div>
     welcome to our Chat app
-    <button v-if="!data" @click="getMail">get Verified</button>
-
+    <button v-if="!verified" @click="getMail">get Verified</button>
+    <router-link to="/chatroom" v-if="verified"> ChatRoom </router-link>
   </div>
 </template>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>
